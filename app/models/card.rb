@@ -11,6 +11,7 @@ class Card < ApplicationRecord
 
   after_create_commit :broadcast_card_created
   after_update_commit :broadcast_card_updated
+  after_destroy_commit :broadcast_card_destroyed
 
   private
 
@@ -25,5 +26,9 @@ class Card < ApplicationRecord
     else
       broadcast_replace_to board, target: dom_id(self), partial: "cards/card", locals: { card: self }
     end
+  end
+
+  def broadcast_card_destroyed
+    broadcast_remove_to board, target: dom_id(self)
   end
 end
